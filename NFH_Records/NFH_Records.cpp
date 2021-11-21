@@ -72,6 +72,8 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <direct.h>
+#include <vector>
 
 
 //Function Prototypes
@@ -82,20 +84,24 @@ void add_patient();
 bool search_name(std::string,std::string);
 bool search_id(std::string);
 std::string capitalise(std::string);
+std::string assign_num();
 
 
 using std::cout;
 using std::cin;
-using std::getline;
 using std::endl;
 using std::string;
 using std::stringstream;
+using std::vector;
 
 char quitter{ '1' };
 
 int main()
 {
+    int succesful{};
+    succesful= _mkdir("NFH");
     home();
+    assign_num();
 
     return 0;
 }
@@ -166,6 +172,11 @@ int data_validation(int min, int max) {
 }
 
 void quit() {
+    system("CLS");
+    cout << "\t\t\t=======================================================================================================\n";
+    cout << "\t\t\t|                                 GOOD - BYE FROM N. F. H.                                            | \n";
+    cout << "\t\t\t=======================================================================================================\n";
+    cout << endl << endl;
     quitter = '0';
 }
 
@@ -178,100 +189,190 @@ void add_patient() {
                     BLOOD GROUP:
                     ALLERGIES:
     */
-    string f_name{}, l_name{}, gender{}, genotype{}, bloodgroup{}, allergies{};
-    int sex{}, geno{},blood_gp;
-
-    cin.ignore(1, '\n');
     system("CLS");
-    cout << "FIRST NAME: ";
-    getline(cin, f_name);
-    f_name = capitalise(f_name);
-    cout << endl;
 
-    cout << "LAST NAME: ";
-    getline(cin, l_name);
-    l_name = capitalise(l_name);
-    cout << endl;
+    string s_num{}, f_name{}, l_name{}, gender{}, genotype{}, bloodgroup{}, allergies{};
+    int sex{}, geno{}, blood_gp{};
+    std::ofstream out_file("NFH/MASTERLIST.txt", std::ios::app);
 
-    cout << "SEX \n1 - MALE\n2 - FEMALE\n";
-    sex = data_validation(1, 2);
-    if (sex == 1) {
-        gender = "MALE";
-    }
-    else {
-        gender = "FEMALE";
-    }
-    cout << endl;
-    
-    cout << "GENOTYPE: \n1 - AA\n2 - AS \n3 - SS\n";
-    geno = data_validation(1, 3);
-    if (geno == 1) {
-        genotype = "AA";
-    }
-    else if (geno == 2) {
-        genotype = "AS";
-    }
-    else {
-        genotype = "SS";
-    }
-    cout << endl;
-
-    cout << "BLOOD GROUP\n1 - A+\n2 - O+\n3 - B+\n4 - AB+\n5 - A-\n6 - O-\n7 - B-\n8 - AB-\n";
-    blood_gp = data_validation(1, 8);
-    switch (blood_gp)
-    {
-    case 1:
-    {
-        bloodgroup = "A+";
-    }break;
-
-    case 2:
-    {
-        bloodgroup = "O+";
-    }break;
-
-    case 3:
-    {
-        bloodgroup = "B+";
-    }break;
-
-    case 4:
-    {
-        bloodgroup = "AB+";
-    }break;
-    
-    case 5:
-    {
-        bloodgroup = "A-";
-    }break;
-
-    case 6:
-    {
-        bloodgroup = "O-";
-    }
-    break;
-
-    case 7:
-    {
-        bloodgroup = "B-";
-    }
-    break;
-
-    case 8:
-    {
-        bloodgroup = "AB-";
-    }
-    break;
-    default:
-            break;
-    }
-    cout << endl;
-
+    cout << "HOW MANY PATIENTS WOULD YOU LIKE TO ADD?: ";
+    bool done{ false };
+    std::string entry;
+    int number;
+    do {
+        cin >> entry;
+        std::istringstream validator{ entry };
+        if (validator >> number) {
+            done = true;
+        }
+        else {
+            cout << "KINDLY ENTER A VALID INPUT\n";
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    } while (!done);
     cin.ignore(1, '\n');
-    cout << "ENTER ALLERGIES\nPLEASE WRITE THE ALLERGIES SEPARATED BY A COMMA (IF MORE THAN 1)\nALLERGIES: ";
-    std::getline(std::cin, allergies);
+
+    for (int i{ 0 }; i < number; i++) {
+                                                                       
+        cout << "\t\t\t==================================================\n";
+        cout << "\t\t\t|                  PATIENT " << i << "                     |\n";
+        cout << "\t\t\t==================================================\n";
+       
+
+        s_num = assign_num(); //The serial number is automatically generated...
+        out_file << s_num << "#";
+
+       
+       
+        cout << "FIRST NAME: ";
+        std::getline(cin, f_name);
+        f_name = capitalise(f_name);
+        out_file << f_name << "#"; //Writing Information to the Master list in the NFH Folder...
+        cout << endl;
+
+        cout << "LAST NAME: ";
+        std::getline(cin, l_name);
+        l_name = capitalise(l_name);
+        out_file << l_name << "#";
+        cout << endl;
+
+        cout << "SEX \n1 - MALE\n2 - FEMALE\n";
+        sex = data_validation(1, 2);
+        if (sex == 1) {
+            gender = "MALE";
+            out_file << "MALE" << "#";
+        }
+        else {
+            gender = "FEMALE";
+            out_file << "FEMALE" << "#";
+        }
+        cout << endl;
 
 
+
+        cout << "GENOTYPE: \n1 - AA\n2 - AS \n3 - SS\n";
+        geno = data_validation(1, 3);
+        if (geno == 1) {
+            genotype = "AA";
+        }
+        else if (geno == 2) {
+            genotype = "AS";
+        }
+        else {
+            genotype = "SS";
+        }
+        cout << endl;
+        out_file << genotype << "#";
+
+
+
+        cout << "BLOOD GROUP\n1 - A+\n2 - O+\n3 - B+\n4 - AB+\n5 - A-\n6 - O-\n7 - B-\n8 - AB-\n";
+        blood_gp = data_validation(1, 8);
+        switch (blood_gp)
+        {
+        case 1:
+        {
+            bloodgroup = "A+";
+
+        }break;
+
+        case 2:
+        {
+            bloodgroup = "O+";
+
+        }break;
+
+        case 3:
+        {
+            bloodgroup = "B+";
+        }break;
+
+        case 4:
+        {
+            bloodgroup = "AB+";
+        }break;
+
+        case 5:
+        {
+            bloodgroup = "A-";
+        }break;
+
+        case 6:
+        {
+            bloodgroup = "O-";
+        }
+        break;
+
+        case 7:
+        {
+            bloodgroup = "B-";
+        }
+        break;
+
+        case 8:
+        {
+            bloodgroup = "AB-";
+        }
+        break;
+        default:
+            break;
+        }
+        cout << endl;
+        out_file << bloodgroup << "#";
+
+        cin.ignore(1, '\n');
+        cout << "ENTER ALLERGIES\nPLEASE WRITE THE ALLERGIES SEPARATED BY A COMMA (IF MORE THAN 1)\nALLERGIES: ";
+        std::getline(std::cin, allergies);
+        allergies = capitalise(allergies);
+        out_file << allergies << endl;
+    }
+
+  
+
+    cout <<number << " PATIENTS HAVE BEEN SUCCESSFULLY ADDED\n\n";
+
+    out_file.close();
+}
+
+std::string assign_num() {
+    std::ifstream in_file;
+    in_file.open("NFH/MASTERLIST.txt");
+    
+    int num{}, count{0};
+    string line{}, c_line{}, c_num{}, r_num{}; //to represent the last line at every point in time
+    while (getline(in_file, line)) {
+        c_line = line;
+        count++;
+    }
+
+    if (count == 0) { //If the document is empty, It means the person is the first on the list...
+        return "0001";
+    }
+
+    //c_line upon exit of the while loop will then be the last line... which is what you want...
+    std::istringstream sstream{ c_line };
+    getline(sstream, c_num, '#');
+    num = stoi(c_num);
+    num++;
+
+    r_num = std::to_string(num);
+    
+    if (num < 10) {
+        r_num = "000" + r_num;
+    }
+    
+    else if (num > 9 && num < 100) {
+        r_num = "00" + r_num;
+    }
+
+    else if (num>99 && num < 999) {
+        r_num = "0" + r_num;
+    }
+
+    else {}
+
+    in_file.close();
+    return r_num;
 }
 
 std::string capitalise(std::string word) {
