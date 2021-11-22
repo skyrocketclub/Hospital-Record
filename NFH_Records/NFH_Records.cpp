@@ -53,6 +53,8 @@
                 Here in this folder, once a patient is added to the hospital record, a file is opened automatically for him
                 The name of the .txt file will be the reg number of the patient...
                 This is where all the relevant information about the cases are stored...
+
+                Implement --> List all patients...
     3. Then Implement "SEARCH FOR A PATIENT"
             --- Follow up case..(The Case availble )
                     Then Select the Case...The Case Appears on the screen
@@ -74,6 +76,7 @@
 #include <cctype>
 #include <direct.h>
 #include <vector>
+#include <iomanip>
 
 
 //Function Prototypes
@@ -85,6 +88,7 @@ bool search_name(std::string,std::string);
 bool search_id(std::string);
 std::string capitalise(std::string);
 std::string assign_num();
+void view_all();
 
 
 using std::cout;
@@ -98,10 +102,12 @@ char quitter{ '1' };
 
 int main()
 {
-    int succesful{};
+    int succesful{}, patients{};
     succesful= _mkdir("NFH");
+    patients = _mkdir("NFH/PATIENTS");
+
     home();
-    assign_num();
+    
 
     return 0;
 }
@@ -215,7 +221,7 @@ void add_patient() {
     for (int i{ 0 }; i < number; i++) {
                                                                        
         cout << "\t\t\t==================================================\n";
-        cout << "\t\t\t|                  PATIENT " << i << "                     |\n";
+        cout << "\t\t\t|                  PATIENT " << i +1<< "                     |\n";
         cout << "\t\t\t==================================================\n";
        
 
@@ -325,12 +331,18 @@ void add_patient() {
         std::getline(std::cin, allergies);
         allergies = capitalise(allergies);
         out_file << allergies << endl;
+
+        //OPEN A FILE FOR THE PATIENT...
+        std::string file_no = "NFH/PATIENTS/"+s_num + ".txt";
+        std::ofstream out_file2(file_no, std::ios::app);
+        out_file2 << s_num << "#" << f_name << "#" << l_name << "#" << gender << "#" << genotype << "#" << bloodgroup << "#" << allergies << endl;
+        out_file2.close();
     }
 
   
 
     cout <<number << " PATIENTS HAVE BEEN SUCCESSFULLY ADDED\n\n";
-
+    
     out_file.close();
 }
 
@@ -379,6 +391,42 @@ std::string capitalise(std::string word) {
 
     std::transform(word.begin(), word.end(), word.begin(), toupper);
     return word;
+}
+
+void view_all() {
+    /*
+                    NAME:
+                    SEX:
+                    GENOTYPE:
+                    BLOOD GROUP:
+                    ALLERGIES:
+    
+    */
+    std::string line{}, f_name{}, l_name{}, sex{}, genotype{}, blood_group{}, allergies{};
+
+    std::ifstream in_file;
+    in_file.open("NFH/MASTERLIST.txt");
+
+    cout << "\t\t\t=========================================================================================\n";
+    cout << "|" << std::setw(7) << std::left << "S/N" << std::setw(15) << std::left << "FIRST NAME"
+        << std::setw(15) << std::left << "LAST NAME" << std::setw(8) << std::left << "SEX"
+        << std::setw(10) << std::left << "GENOTYPE" << std::setw(13) << std::left << "BLOOD GRP" <<
+        std::setw(30) << std::left << "ALLERGIES" << "|\n";
+    cout << "\t\t\t=========================================================================================\n";
+
+    while (std::getline(in_file, line)) {
+        std::vector<std::string> lists;
+        std::string substr;
+        std::istringstream s_stream{ line };
+        while (s_stream.good()) {
+            std::getline(s_stream, substr, '#');
+            lists.push_back(substr);
+
+            //Modify the content of the vectors here so that you can output the list ...
+        }
+    }
+
+    in_file.close();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
