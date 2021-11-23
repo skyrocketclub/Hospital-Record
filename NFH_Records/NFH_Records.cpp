@@ -9,7 +9,7 @@
         --- ADD A NEW PATIENT
         --- GO BACK
     ELSE
-            THEN THE ID OF THE PATIENT IS SOUGHT FOR AND IF IT POPS UP
+            THEN THE ID OF THE PATIENT IS SOUGHT FOR ,(The first name can also be sought for and the list of all the people with that name pop)AND IF IT POPS UP
                 THE DETAILS LIKE
                     NAME:
                     SEX:
@@ -84,6 +84,7 @@ void home();
 int data_validation(int, int);
 void quit();
 void add_patient();
+void search();
 bool search_name(std::string,std::string);
 bool search_id(std::string);
 std::string capitalise(std::string);
@@ -129,7 +130,8 @@ void home() {
         {
             case 1:
             {
-
+                search();
+                home();
             }break;
 
             case 2:
@@ -140,7 +142,8 @@ void home() {
 
             case 3:
             {
-
+                view_all();
+                home();
             }break;
 
             case 4:
@@ -154,6 +157,47 @@ void home() {
     }
 
        
+}
+
+void search() {
+    /*
+        The user is asked if he would like to search using the patients ID or the patients name...
+         The he chooses his preferred choice. When he searches, the function search_name or search_id is used depending on the choice of the user
+         if the user is found
+            Then {
+
+            The Doctor Enters his name here so that any modification done in this session has his name attached to it)
+
+    IF THE PATIENT IS NOT THERE
+        --- ADD A NEW PATIENT
+        --- GO BACK
+    ELSE
+            THEN THE ID OF THE PATIENT IS SOUGHT FOR ,(The first name can also be sought for and the list of all the people with that name pop)AND IF IT POPS UP
+                THE DETAILS LIKE
+                    NAME:
+                    SEX:
+                    GENOTYPE:
+                    BLOOD GROUP:
+                    ALLERGIES:
+                    
+                    POP UP...
+                THEN... RECORD OF PREVIOUS TREATMENTS POP UP IN A TABLE
+
+                --S/N --- SYMPTOMS --- DIAGNOSIS --- TREATMENTS --- MEMBER OF HOSPITAL STAFF
+
+                        1. FOLLOW UP CASE?
+                                SELECT THE NUMBER OF THE CASE TO FOLLOW UP...(THEN CHOOSE WHAT YOU WOULD LIKE TO EDIT/ADD INFO... EITHER
+                                    SYMPTOMS
+                                    DIAGNOSIS
+                                    TREATMENT 
+                                    
+                        2. NEW CASE...
+                            SIMPLE ENTER THE 
+                --S/N --- SYMPTOMS --- DIAGNOSIS --- TREATMENTS -------->
+
+                        3. GO BACK
+    
+    */
 }
 
 int data_validation(int min, int max) {
@@ -407,12 +451,12 @@ void view_all() {
     std::ifstream in_file;
     in_file.open("NFH/MASTERLIST.txt");
 
-    cout << "\t\t\t=========================================================================================\n";
+    cout << "=============================================================================================================\n";
     cout << "|" << std::setw(7) << std::left << "S/N" << std::setw(15) << std::left << "FIRST NAME"
         << std::setw(15) << std::left << "LAST NAME" << std::setw(8) << std::left << "SEX"
         << std::setw(10) << std::left << "GENOTYPE" << std::setw(13) << std::left << "BLOOD GRP" <<
-        std::setw(30) << std::left << "ALLERGIES" << "|\n";
-    cout << "\t\t\t=========================================================================================\n";
+        std::setw(40) <<std::right<< "ALLERGIES                       " << "|\n";
+    cout << "=============================================================================================================\n";
 
     while (std::getline(in_file, line)) {
         std::vector<std::string> lists;
@@ -420,11 +464,16 @@ void view_all() {
         std::istringstream s_stream{ line };
         while (s_stream.good()) {
             std::getline(s_stream, substr, '#');
-            lists.push_back(substr);
-
-            //Modify the content of the vectors here so that you can output the list ...
+            lists.push_back(substr); 
         }
+
+        //Modify the content of the vectors here so that ou can output the list ...
+        cout << "|" << std::setw(7) << std::left << lists.at(0) << std::setw(15) << std::left << lists.at(1)
+            << std::setw(15) << std::left << lists.at(2) << std::setw(8) << std::left << lists.at(3)
+            << std::setw(10) << std::left << lists.at(4) << std::setw(13) << std::left << lists.at(5) <<
+            std::setw(40)<< std::right << lists.at(6) << "|\n";
     }
+    cout << "=============================================================================================================\n";
 
     in_file.close();
 }
